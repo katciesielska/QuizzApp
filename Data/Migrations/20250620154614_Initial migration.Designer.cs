@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizzApp.Data;
 
@@ -11,9 +12,11 @@ using QuizzApp.Data;
 namespace QuizzApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250620154614_Initial migration")]
+    partial class Initialmigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,11 +89,6 @@ namespace QuizzApp.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -142,10 +140,6 @@ namespace QuizzApp.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator().HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -233,40 +227,11 @@ namespace QuizzApp.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("QuizzApp.Models.AnswerSelection", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("QuizResultId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SelectedOptionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.HasIndex("QuizResultId");
-
-                    b.HasIndex("SelectedOptionId");
-
-                    b.ToTable("AnswerSelections");
-                });
-
             modelBuilder.Entity("QuizzApp.Models.Option", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
 
                     b.Property<Guid>("QuestionId")
                         .HasColumnType("uniqueidentifier");
@@ -288,7 +253,7 @@ namespace QuizzApp.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("QuizId")
+                    b.Property<Guid>("CorrectOption")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
@@ -297,68 +262,7 @@ namespace QuizzApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuizId");
-
                     b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("QuizzApp.Models.Quiz", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Quizzes");
-                });
-
-            modelBuilder.Entity("QuizzApp.Models.QuizResult", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CompletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("QuizId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuizResults");
-                });
-
-            modelBuilder.Entity("QuizzApp.Models.ApplicationUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -412,107 +316,18 @@ namespace QuizzApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QuizzApp.Models.AnswerSelection", b =>
-                {
-                    b.HasOne("QuizzApp.Models.Question", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("QuizzApp.Models.QuizResult", "QuizResult")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuizResultId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("QuizzApp.Models.Option", "SelectedOption")
-                        .WithMany()
-                        .HasForeignKey("SelectedOptionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Question");
-
-                    b.Navigation("QuizResult");
-
-                    b.Navigation("SelectedOption");
-                });
-
             modelBuilder.Entity("QuizzApp.Models.Option", b =>
                 {
-                    b.HasOne("QuizzApp.Models.Question", "Question")
+                    b.HasOne("QuizzApp.Models.Question", null)
                         .WithMany("Options")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("QuizzApp.Models.Question", b =>
-                {
-                    b.HasOne("QuizzApp.Models.Quiz", "Quiz")
-                        .WithMany("Questions")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("QuizzApp.Models.Quiz", b =>
-                {
-                    b.HasOne("QuizzApp.Models.ApplicationUser", "User")
-                        .WithMany("Quizzes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("QuizzApp.Models.QuizResult", b =>
-                {
-                    b.HasOne("QuizzApp.Models.Quiz", "Quiz")
-                        .WithMany("Results")
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("QuizzApp.Models.ApplicationUser", "User")
-                        .WithMany("QuizResults")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Quiz");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("QuizzApp.Models.Question", b =>
                 {
                     b.Navigation("Options");
-                });
-
-            modelBuilder.Entity("QuizzApp.Models.Quiz", b =>
-                {
-                    b.Navigation("Questions");
-
-                    b.Navigation("Results");
-                });
-
-            modelBuilder.Entity("QuizzApp.Models.QuizResult", b =>
-                {
-                    b.Navigation("Answers");
-                });
-
-            modelBuilder.Entity("QuizzApp.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("QuizResults");
-
-                    b.Navigation("Quizzes");
                 });
 #pragma warning restore 612, 618
         }
