@@ -101,7 +101,11 @@ namespace QuizzApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", quiz.UserId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (quiz.UserId != userId)
+            {
+                return Forbid(); // User is not authorized to edit this quiz
+            }
             return View(quiz);
         }
 
@@ -111,36 +115,49 @@ namespace QuizzApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,UserId")] Quiz quiz)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description")] Quiz quiz)
         {
-            if (id != quiz.Id)
+            if (!ModelState.IsValid)
+            {
+                return View(quiz);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var quizToUpdate = await _context.Quiz.FindAsync(id);
+
+            if (quizToUpdate == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            // Only owner can edit
+            if (quizToUpdate.UserId != userId)
             {
-                try
-                {
-                    _context.Update(quiz);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!QuizExists(quiz.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                return Forbid();
+            }
+
+            // Update only allowed fields
+            quizToUpdate.Title = quiz.Title;
+            quizToUpdate.Description = quiz.Description;
+
+            try
+            {
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", quiz.UserId);
-            return View(quiz);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!QuizExists(quiz.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
+
 
         // GET: Quizs/Delete/5
         [Authorize]
