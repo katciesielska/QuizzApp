@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<QuizzApp.Models.Quiz>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Wszystkie Quizy";
 }
 
-<h1>Index</h1>
+<h1>Wszystkie quizy</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Stwórz nowy quiz</a>
 </p>
 <table class="table">
     <thead>
@@ -37,9 +37,7 @@
                 @Html.DisplayFor(modelItem => item.User.UserName)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
             </td>
         </tr>
 }
