@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,8 +28,20 @@ namespace QuizzApp.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Quizs/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Quizs/MyQuizzes
+        [Authorize]
+        public async Task<IActionResult> MyQuizzes()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var myQuizzes = _context.Quiz
+            .Include(q => q.User)
+            .Where(q => q.UserId == userId);
+            return View(await myQuizzes.ToListAsync());
+        }
+
+
+    // GET: Quizs/Details/5
+    public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -60,18 +73,16 @@ namespace QuizzApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,UserId")] Quiz quiz)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description")] Quiz quiz)
         {
             if (ModelState.IsValid)
             {
+                quiz.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get the current user's ID
                 _context.Add(quiz);
                 await _context.SaveChangesAsync();
                 // After saving the quiz
                 return RedirectToAction("Create", "Questions", new { quizId = quiz.Id });
-
-                //return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", quiz.UserId);
             return View(quiz);
 
         }

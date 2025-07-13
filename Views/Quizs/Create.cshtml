@@ -13,15 +13,16 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group mb-3">
-                <label asp-for="Title" class="control-label">Tytuł</label>
-                <input asp-for="Title" class="form-control" />
+                <label asp-for="Title" class="control-label" ></label>
+                <input asp-for="Title" class="form-control" placeholder="Wpisz tytuł quizu" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
-                <label asp-for="Description" class="control-label">Opis</label>
-                <input asp-for="Description" class="form-control" />
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" placeholder="Wpisz opis quizu"/>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+
             <div class="form-group mb-3">
                 <input type="submit" value="Zapisz" class="btn btn-primary" />
             </div>
