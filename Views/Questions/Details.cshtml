@@ -1,36 +1,45 @@
 ﻿@model QuizzApp.Models.Question
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Szczegóły pytania";
 }
 
-<h1>Details</h1>
+<h1>Szczegóły pytania</h1>
 
 <div>
-    <h4>Question</h4>
+    <h4>Pytanie</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Text)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Quiz)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Quiz.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Score)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Score)
-        </dd>
+        <dt class="col-sm-3">Treść pytania</dt>
+        <dd class="col-sm-9">@Model.Text</dd>
+
+        <dt class="col-sm-3">Punkty</dt>
+        <dd class="col-sm-9">@Model.Score</dd>
+
+        <dt class="col-sm-3">Quiz</dt>
+        <dd class="col-sm-9">@Model.Quiz?.Title</dd>
     </dl>
 </div>
+
+@if (Model.Answers != null && Model.Answers.Any())
+{
+    <h5>Odpowiedzi:</h5>
+    <ul>
+        @foreach (var answer in Model.Answers)
+        {
+            <li>
+                @answer.Text
+                @if (answer.IsCorrect)
+                {
+                    <span class="badge bg-success">Poprawna</span>
+                }
+            </li>
+        }
+    </ul>
+}
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edytuj</a> |
+    <a asp-action="Delete" asp-route-id="@Model.Id">Usuń</a> |
+    <a asp-action="ListForQuiz" asp-route-quizId="@Model.QuizId">Wróć do listy pytań</a>
 </div>

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using QuizzApp.Data;
 using QuizzApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace QuizzApp.Controllers
 {
@@ -27,6 +28,24 @@ namespace QuizzApp.Controllers
             var applicationDbContext = _context.Question.Include(q => q.Quiz);
             return View(await applicationDbContext.ToListAsync());
         }
+        // GET: Questions/ListForQuiz/5
+        [Authorize]
+        public async Task<IActionResult> ListForQuiz(int quizId)
+        {
+            var quiz = await _context.Quiz
+                .Include(q => q.Questions)
+                .FirstOrDefaultAsync(q => q.Id == quizId);
+
+            if (quiz == null)
+                return NotFound();
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (quiz.UserId != userId)
+                return Forbid();
+
+            return View(quiz);
+        }
+
 
         // GET: Questions/Details/5
         [Authorize]
@@ -50,10 +69,20 @@ namespace QuizzApp.Controllers
 
         // GET: Questions/Create
         [Authorize]
-        public IActionResult Create()
+        public IActionResult Create(int quizId)
         {
-            ViewData["QuizId"] = new SelectList(_context.Quiz, "Id", "Id");
-            return View();
+            // Check if the quiz exists
+            var quiz = _context.Quiz.Find(quizId);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+            var question = new Question
+            {
+                QuizId = quizId,
+                Quiz = quiz // Set the Quiz navigation property
+            };
+            return View(question);
         }
 
         // POST: Questions/Create
@@ -62,15 +91,24 @@ namespace QuizzApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create([Bind("Id,Text,QuizId,Score")] Question question)
+        public async Task<IActionResult> Create([Bind("Text,Score,QuizId")] Question question)
         {
+            var quiz = await _context.Quiz.FindAsync(question.QuizId);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (quiz.UserId != userId)
+            {
+                return Forbid(); // User is not authorized to create questions for this quiz
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(question);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("ListForQuiz", new { quizId = question.QuizId });
             }
-            ViewData["QuizId"] = new SelectList(_context.Quiz, "Id", "Id", question.QuizId);
             return View(question);
         }
 
@@ -82,13 +120,18 @@ namespace QuizzApp.Controllers
             {
                 return NotFound();
             }
-
-            var question = await _context.Question.FindAsync(id);
+            var question = await _context.Question
+                .Include(q => q.Quiz)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (question == null)
             {
                 return NotFound();
             }
-            ViewData["QuizId"] = new SelectList(_context.Quiz, "Id", "Id", question.QuizId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (question.Quiz == null || question.Quiz.UserId != userId)
+            {
+                return Forbid();
+            }
             return View(question);
         }
 
@@ -104,13 +147,27 @@ namespace QuizzApp.Controllers
             {
                 return NotFound();
             }
+            var existingQuestion = await _context.Question
+                .Include(q => q.Quiz)
+                .FirstOrDefaultAsync(q => q.Id == id);
+            if (existingQuestion == null)
+            {
+                return NotFound();
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (existingQuestion.Quiz == null || existingQuestion.Quiz.UserId != userId)
+            {
+                return Forbid();
+            }
 
             if (ModelState.IsValid)
             {
+                existingQuestion.Text = question.Text;
+                existingQuestion.Score = question.Score;
                 try
                 {
-                    _context.Update(question);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction("ListForQuiz", new { quizId = existingQuestion.QuizId });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,9 +180,7 @@ namespace QuizzApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["QuizId"] = new SelectList(_context.Quiz, "Id", "Id", question.QuizId);
             return View(question);
         }
 
@@ -145,6 +200,11 @@ namespace QuizzApp.Controllers
             {
                 return NotFound();
             }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (question.Quiz == null || question.Quiz.UserId != userId)
+            {
+                return Forbid(); 
+            }
 
             return View(question);
         }
@@ -155,14 +215,20 @@ namespace QuizzApp.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var question = await _context.Question.FindAsync(id);
-            if (question != null)
+            var question = await _context.Question.Include(q => q.Quiz).FirstOrDefaultAsync(q => q.Id == id);
+            if (question==null)
             {
-                _context.Question.Remove(question);
+                return NotFound();
             }
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (question.Quiz == null || question.Quiz.UserId != userId)
+            {
+                return Forbid();
+            }
+            var quizId = question.QuizId;
+            _context.Question.Remove(question);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("ListForQuiz", new { quizId });
         }
 
         private bool QuestionExists(int id)

@@ -1,0 +1,43 @@
+﻿@model QuizzApp.Models.Quiz
+
+@{
+    ViewData["Title"] = "Pytania w quizie";
+}
+
+<h1>Pytania w quizie: @Model.Title</h1>
+<p>@Model.Description</p>
+
+<p>
+    <a asp-action="Create" asp-route-quizId="@Model.Id" class="btn btn-primary">Dodaj pytanie</a>
+</p>
+
+@if (Model.Questions != null && Model.Questions.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Treść pytania</th>
+                <th>Punkty</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var q in Model.Questions)
+            {
+                <tr>
+                    <td>@q.Text</td>
+                    <td>@q.Score</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@q.Id">Edytuj</a> |
+                        <a asp-action="Delete" asp-route-id="@q.Id">Usuń</a> |
+                        <a asp-action="Details" asp-route-id="@q.Id">Szczegóły</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Brak pytań w tym quizie.</p>
+}
