@@ -20,6 +20,9 @@
         <dd class="col-sm-9">@Model.Quiz?.Title</dd>
     </dl>
 </div>
+<div>
+	<a asp-action="Create" asp-controller="Answers" asp-route-questionId="@Model.Id">Dodaj odpowiedź</a>
+</div>
 
 @if (Model.Answers != null && Model.Answers.Any())
 {

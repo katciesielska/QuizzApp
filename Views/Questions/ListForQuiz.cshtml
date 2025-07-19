@@ -1,5 +1,6 @@
 ﻿@model QuizzApp.Models.Quiz
 
+
 @{
     ViewData["Title"] = "Pytania w quizie";
 }
@@ -30,7 +31,8 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@q.Id">Edytuj</a> |
                         <a asp-action="Delete" asp-route-id="@q.Id">Usuń</a> |
-                        <a asp-action="Details" asp-route-id="@q.Id">Szczegóły</a>
+                        <a asp-action="Details" asp-route-id="@q.Id">Szczegóły</a>|
+                        <a asp-controller="Answers" asp-action="Index" asp-route-questionId="@q.Id">Zarządzaj odpowiedziami</a>
                     </td>
                 </tr>
             }

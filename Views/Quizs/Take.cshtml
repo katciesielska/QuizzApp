@@ -1,0 +1,39 @@
+﻿@model QuizzApp.Models.Quiz
+
+@{
+    ViewData["Title"] = "Rozwiąż quiz";
+}
+
+<h1>Quiz: @Model.Title</h1>
+<p>@Model.Description</p>
+
+<form asp-action="SubmitQuiz" method="post">
+    <input type="hidden" name="QuizId" value="@Model.Id" />
+    @for (int i = 0; i < Model.Questions.Count; i++)
+    {
+        var question = Model.Questions.ElementAt(i);
+        <div class="mb-3">
+            <strong>@(i + 1). @question.Text</strong>
+            @if (question.Answers != null && question.Answers.Any())
+            {
+                <ul>
+                    @foreach (var answer in question.Answers)
+                    {
+                        <li>
+                            <input type="radio" name="SelectedAnswers[@question.Id]" value="@answer.Id" id="answer_@answer.Id" />
+                            <label for="answer_@answer.Id">@answer.Text</label>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div class="text-warning">Brak odpowiedzi do tego pytania.</div>
+                <input type="hidden" name="SelectedAnswers[@question.Id]" value="" />
+            }
+        </div>
+    }
+
+    <button type="submit" class="btn btn-success">Zatwierdź odpowiedzi</button>
+</form>
+

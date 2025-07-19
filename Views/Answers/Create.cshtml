@@ -1,0 +1,32 @@
+﻿@model QuizzApp.Models.Answer
+
+@{
+    ViewData["Title"] = "Dodaj odpowiedź";
+}
+
+<h1>Dodaj odpowiedź</h1>
+
+<form asp-action="Create" method="post">
+    <input type="hidden" asp-for="QuestionId" />
+    <div class="form-group">
+        <label asp-for="Text" class="control-label">Treść odpowiedzi</label>
+        <input asp-for="Text" class="form-control" />
+        <span asp-validation-for="Text" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="IsCorrect" class="control-label">Czy poprawna?</label>
+        <input asp-for="IsCorrect" type="checkbox" class="form-check-input" />
+        <span asp-validation-for="IsCorrect" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+</form>
+
+<div>
+    <a asp-controller="Questions" asp-action="Details" asp-route-id="@Model.QuestionId">Wróć do pytania</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,8 @@
+﻿@model QuizzApp.Models.Quiz
+
+@{
+    ViewData["Title"] = "Wynik quizu";
+}
+
+<h1>Twój wynik: @ViewData["Score"] / @ViewData["MaxScore"]</h1>
+<a asp-action="Index">Wróć do quizów</a>

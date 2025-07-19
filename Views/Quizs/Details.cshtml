@@ -11,31 +11,32 @@
     <h4>Quiz</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Title)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.User)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.UserName)
+        <dd class="col-sm-10">
+            @(Model.User != null ? Model.User.UserName : "Brak autora")
         </dd>
     </dl>
 </div>
 <div class="mb-3">
-    <a asp-controller="Questions" asp-action="Take" asp-route-quizId="@Model.Id" class="btn btn-success">Rozpocznij quiz</a>
+    <a asp-controller="Quizs" asp-action="Take" asp-route-id="@Model.Id" class="btn btn-success">Rozpocznij quiz</a>
 </div>
 @{
-    var isOwner = User.Identity.IsAuthenticated && Model.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var currentUserId = User?.Identity?.IsAuthenticated == true ? User.FindFirstValue(ClaimTypes.NameIdentifier) : null;
+    var isOwner = !string.IsNullOrEmpty(Model.UserId) && Model.UserId == currentUserId;
 }
 <div>
     @if (isOwner)
@@ -44,3 +45,4 @@
     }
     <a asp-action="Index">Wróć do listy</a>
 </div>
+

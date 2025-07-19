@@ -1,0 +1,36 @@
+﻿@model QuizzApp.Models.Question
+
+@{
+    ViewData["Title"] = "Odpowiedzi";
+}
+
+<h1>Odpowiedzi do pytania: @Model.Text</h1>
+
+<p>
+    <a asp-action="Create" asp-route-questionId="@Model.Id">Dodaj nową odpowiedź</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Treść odpowiedzi</th>
+            <th>Poprawna?</th>
+            <th>Pytanie</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Answers)
+        {
+            <tr>
+                <td>@item.Text</td>
+                <td>@(item.IsCorrect ? "Tak" : "Nie")</td>
+                <td>@Model.Text</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

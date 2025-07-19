@@ -12,5 +12,6 @@ namespace QuizzApp.Data
         }
         public DbSet<QuizzApp.Models.Quiz> Quiz { get; set; } = default!;
         public DbSet<QuizzApp.Models.Question> Question { get; set; } = default!;
+        public DbSet<QuizzApp.Models.Answer> Answer { get; set; } = default!;
     }
 }

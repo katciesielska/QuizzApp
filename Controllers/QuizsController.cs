@@ -39,9 +39,52 @@ namespace QuizzApp.Controllers
             return View(await myQuizzes.ToListAsync());
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Take(int id)
+        {
+            var quiz = await _context.Quiz
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Id == id);
 
-    // GET: Quizs/Details/5
-    public async Task<IActionResult> Details(int? id)
+            if (quiz == null)
+                return NotFound();
+
+            return View(quiz);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitQuiz(int QuizId, Dictionary<int, int> SelectedAnswers)
+        {
+            var quiz = await _context.Quiz
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Id == QuizId);
+
+            if (quiz == null)
+                return NotFound();
+
+            int score = 0;
+            foreach (var question in quiz.Questions)
+            {
+                if (SelectedAnswers.TryGetValue(question.Id, out int answerId))
+                {
+                    var answer = question.Answers.FirstOrDefault(a => a.Id == answerId);
+                    if (answer != null && answer.IsCorrect)
+                    {
+                        score += question.Score;
+                    }
+                }
+            }
+
+            ViewData["Score"] = score;
+            ViewData["MaxScore"] = quiz.Questions.Sum(q => q.Score);
+            return View("QuizResult", quiz);
+        }
+
+
+        // GET: Quizs/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
