@@ -40,6 +40,7 @@ namespace QuizzApp.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Take(int id)
         {
             var quiz = await _context.Quiz
@@ -54,6 +55,7 @@ namespace QuizzApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SubmitQuiz(int QuizId, Dictionary<int, int> SelectedAnswers)
         {
             var quiz = await _context.Quiz

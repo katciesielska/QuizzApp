@@ -246,7 +246,7 @@ namespace QuizzApp.Data.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answer");
+                    b.ToTable("Answer", (string)null);
                 });
 
             modelBuilder.Entity("QuizzApp.Models.Question", b =>
@@ -271,7 +271,7 @@ namespace QuizzApp.Data.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("Question");
+                    b.ToTable("Question", (string)null);
                 });
 
             modelBuilder.Entity("QuizzApp.Models.Quiz", b =>
@@ -297,7 +297,7 @@ namespace QuizzApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Quiz");
+                    b.ToTable("Quiz", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
