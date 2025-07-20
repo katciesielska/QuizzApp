@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,8 @@ namespace QuizzApp.Controllers
         }
 
         // GET: Answers
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Index(int questionId)
         {
             var question = await _context.Question.Include(q => q.Answers)
@@ -32,6 +35,8 @@ namespace QuizzApp.Controllers
         }
 
         // GET: Answers/Details/5
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -51,6 +56,8 @@ namespace QuizzApp.Controllers
         }
 
         // GET: Answers/Create
+        [HttpGet]
+        [Authorize]
         public IActionResult Create(int questionId)
         {
             {
@@ -72,6 +79,7 @@ namespace QuizzApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Create([Bind("Id,Text,IsCorrect,QuestionId")] Answer answer)
         {
             var question = await _context.Question.FindAsync(answer.QuestionId);
@@ -83,12 +91,14 @@ namespace QuizzApp.Controllers
             {
                 _context.Add(answer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index", new { id = answer.QuestionId });
+                return RedirectToAction("Index", new { questionid = answer.QuestionId });
             }
-            return View();
+            return View(answer);
         }
 
         // GET: Answers/Edit/5
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -96,7 +106,10 @@ namespace QuizzApp.Controllers
                 return NotFound();
             }
 
-            var answer = await _context.Answer.FindAsync(id);
+            var answer = await _context.Answer
+                .Include(a => a.Question)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
             if (answer == null)
             {
                 return NotFound();
@@ -109,6 +122,7 @@ namespace QuizzApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Text,IsCorrect,QuestionId")] Answer answer)
         {
             if (id != answer.Id)
@@ -134,12 +148,15 @@ namespace QuizzApp.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", new { questionId = answer.QuestionId });
             }
             return View(answer);
         }
 
+
         // GET: Answers/Delete/5
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -161,6 +178,7 @@ namespace QuizzApp.Controllers
         // POST: Answers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var answer = await _context.Answer.FindAsync(id);
