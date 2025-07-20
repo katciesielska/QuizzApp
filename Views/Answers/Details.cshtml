@@ -1,36 +1,36 @@
 ﻿@model QuizzApp.Models.Answer
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Szczegóły odpowiedzi";
 }
 
-<h1>Details</h1>
+<h1>Szczegóły odpowiedzi</h1>
 
 <div>
-    <h4>Answer</h4>
+    <h4>Odpowiedź</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Text)
+        <dt class="col-sm-2">
+            Treść odpowiedzi
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Text)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsCorrect)
+        <dt class="col-sm-2">
+            Czy poprawna?
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsCorrect)
+        <dd class="col-sm-10">
+            @(Model.IsCorrect ? "Tak" : "Nie")
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Question)
+        <dt class="col-sm-2">
+            ID pytania
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Question.Id)
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary me-2">Edytuj</a>
+    <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
 </div>
