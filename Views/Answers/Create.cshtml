@@ -14,18 +14,11 @@
         <input asp-for="Text" class="form-control" />
         <span asp-validation-for="Text" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="IsCorrect" class="control-label">Czy poprawna?</label>
-        <input asp-for="IsCorrect" type="checkbox" class="form-check-input" />
-        <span asp-validation-for="IsCorrect" class="text-danger"></span>
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+        <a asp-controller="Questions" asp-action="Details" asp-route-id="@Model.QuestionId" class="btn btn-secondary ms-2">Wróć do pytania</a>
     </div>
-
-    <button type="submit" class="btn btn-primary">Zapisz</button>
 </form>
-
-<div>
-    <a asp-controller="Questions" asp-action="Details" asp-route-id="@Model.QuestionId">Wróć do pytania</a>
-</div>
 
 @section Scripts {
     @{
