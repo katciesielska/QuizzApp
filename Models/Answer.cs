@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
 
 
 namespace QuizzApp.Models
@@ -15,7 +14,5 @@ namespace QuizzApp.Models
         public bool IsCorrect { get; set; } // Indicates if the answer is correct
         public int QuestionId { get; set; } // Foreign key to Question
         public Question? Question { get; set; } // Navigation property to Question
-        public string? UserId { get; set; } // Foreign key to User
-        public IdentityUser? User { get; set; } // Navigation property to User
     }
 }
