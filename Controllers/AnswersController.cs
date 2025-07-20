@@ -64,6 +64,21 @@ namespace QuizzApp.Controllers
             return View(answer);
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SetCorrectAnswer(int questionId, int correctAnswerId)
+        {
+            var answers = await _context.Answer.Where(a => a.QuestionId == questionId).ToListAsync();
+            foreach (var answer in answers)
+            {
+                answer.IsCorrect = (answer.Id == correctAnswerId);
+            }
+            await _context.SaveChangesAsync();
+            // Redirect back to the answers list for the question
+            return RedirectToAction("Index", new { questionId = questionId });
+        }
+
+
         // GET: Answers/Create
         [HttpGet]
         [Authorize]
