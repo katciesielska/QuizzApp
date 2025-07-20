@@ -9,8 +9,13 @@
 <p>@Model.Description</p>
 
 <p>
-    <a asp-action="Create" asp-route-quizId="@Model.Id" class="btn btn-primary">Dodaj pytanie</a>
+    <a asp-action="Create" asp-route-quizId="@Model.Id" class="btn btn-primary me-2">Dodaj pytanie</a>
+    <a asp-controller="Quizs" asp-action="MyQuizzes" class="btn btn-secondary">
+        Powrót do moich quizów
+    </a>
 </p>
+
+
 
 @if (Model.Questions != null && Model.Questions.Any())
 {
@@ -29,11 +34,12 @@
                     <td>@q.Text</td>
                     <td>@q.Score</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@q.Id">Edytuj</a> |
-                        <a asp-action="Delete" asp-route-id="@q.Id">Usuń</a> |
-                        <a asp-action="Details" asp-route-id="@q.Id">Szczegóły</a>|
-                        <a asp-controller="Answers" asp-action="Index" asp-route-questionId="@q.Id">Zarządzaj odpowiedziami</a>
+                        <a asp-action="Edit" asp-route-id="@q.Id" class="btn btn-sm btn-primary me-1">Edytuj</a>
+                        <a asp-action="Delete" asp-route-id="@q.Id" class="btn btn-sm btn-danger me-1">Usuń</a>
+                        <a asp-action="Details" asp-route-id="@q.Id" class="btn btn-sm btn-info me-1">Szczegóły</a>
+                        <a asp-controller="Answers" asp-action="Index" asp-route-questionId="@q.Id" class="btn btn-sm btn-warning">Zarządzaj odpowiedziami</a>
                     </td>
+
                 </tr>
             }
         </tbody>

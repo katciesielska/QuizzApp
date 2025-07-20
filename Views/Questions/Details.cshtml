@@ -20,8 +20,8 @@
         <dd class="col-sm-9">@Model.Quiz?.Title</dd>
     </dl>
 </div>
-<div>
-	<a asp-action="Create" asp-controller="Answers" asp-route-questionId="@Model.Id">Dodaj odpowiedź</a>
+<div class="mb-3">
+    <a asp-action="Create" asp-controller="Answers" asp-route-questionId="@Model.Id" class="btn btn-primary">Dodaj odpowiedź</a>
 </div>
 
 @if (Model.Answers != null && Model.Answers.Any())
@@ -41,8 +41,8 @@
     </ul>
 }
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edytuj</a> |
-    <a asp-action="Delete" asp-route-id="@Model.Id">Usuń</a> |
-    <a asp-action="ListForQuiz" asp-route-quizId="@Model.QuizId">Wróć do listy pytań</a>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary me-2">Edytuj</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger me-2">Usuń</a>
+    <a asp-action="ListForQuiz" asp-route-quizId="@Model.QuizId" class="btn btn-secondary">Wróć do listy pytań</a>
 </div>

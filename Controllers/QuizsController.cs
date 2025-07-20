@@ -22,6 +22,7 @@ namespace QuizzApp.Controllers
         }
 
         // GET: Quizs
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Quiz.Include(q => q.User);
@@ -86,6 +87,7 @@ namespace QuizzApp.Controllers
 
 
         // GET: Quizs/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -96,13 +98,19 @@ namespace QuizzApp.Controllers
             var quiz = await _context.Quiz
                 .Include(q => q.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (quiz == null)
             {
                 return NotFound();
             }
 
+            // Count how many people took the quiz
+            int attemptsCount = await _context.QuizAttempt.CountAsync(a => a.QuizId == id);
+            ViewData["AttemptsCount"] = attemptsCount;
+
             return View(quiz);
         }
+
 
         // GET: Quizs/Create
         [Authorize]
