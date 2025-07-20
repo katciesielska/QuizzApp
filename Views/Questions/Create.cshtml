@@ -1,41 +1,41 @@
 ﻿@model QuizzApp.Models.Question
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Dodaj pytanie";
 }
 
-<h1>Create</h1>
+<h1>Dodaj pytanie</h1>
 
-<h4>Question</h4>
+<h4>Pytanie</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Text" class="control-label"></label>
+                <label asp-for="Text" class="control-label">Treść pytania</label>
                 <input asp-for="Text" class="form-control" />
                 <span asp-validation-for="Text" class="text-danger"></span>
             </div>
+            <input type="hidden" asp-for="QuizId" />
             <div class="form-group">
-                <input type="hidden" asp-for="QuizId" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Score" class="control-label"></label>
-                <input asp-for="Score" class="form-control" />
+                <label asp-for="Score" class="control-label">Punkty</label>
+                <input asp-for="Score" class="form-control" value="1" min="1" />
                 <span asp-validation-for="Score" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Dodaj" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="ListForQuiz" asp-route-quizId="@Model.QuizId">Wróć do listy</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

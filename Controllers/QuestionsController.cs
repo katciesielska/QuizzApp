@@ -22,7 +22,7 @@ namespace QuizzApp.Controllers
         }
 
         // GET: Questions
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Question.Include(q => q.Quiz);
