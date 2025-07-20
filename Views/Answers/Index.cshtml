@@ -7,7 +7,7 @@
 <h1>Odpowiedzi do pytania: @Model.Text</h1>
 
 <p>
-    <a asp-action="Create" asp-route-questionId="@Model.Id">Dodaj nową odpowiedź</a>
+    <a asp-action="Create" asp-route-questionId="@Model.Id" class="btn btn-success mb-3">Dodaj nową odpowiedź</a>
 </p>
 
 <form asp-action="SetCorrectAnswer" asp-controller="Answers" method="post">
@@ -33,9 +33,9 @@
                     <td>@(item.IsCorrect ? "Tak" : "Nie")</td>
                     <td>@Model.Text</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm me-2">Edytuj</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm me-2">Szczegóły</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Usuń</a>
                     </td>
                 </tr>
             }
@@ -43,7 +43,6 @@
     </table>
     <button type="submit" class="btn btn-primary">Ustaw poprawną odpowiedź</button>
 </form>
-<a asp-controller="Questions" asp-action="ListForQuiz" asp-route-quizId="@Model.QuizId" class="btn btn-secondary">
+<a asp-controller="Questions" asp-action="ListForQuiz" asp-route-quizId="@Model.QuizId" class="btn btn-secondary mt-3">
     Powrót do listy pytań
 </a>
-
