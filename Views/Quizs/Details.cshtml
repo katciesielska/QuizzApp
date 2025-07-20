@@ -29,14 +29,29 @@
         <dd class="col-sm-10">
             @(Model.User != null ? Model.User.UserName : "Brak autora")
         </dd>
-        <dt class="col-sm-2">
-            Liczba rozwiązań
-        </dt>
-        <dd class="col-sm-10">
-            @ViewData["AttemptsCount"]
-        </dd>
-
     </dl>
+    @{
+        var questionStats = ViewData["QuestionStats"] as IEnumerable<dynamic>;
+    }
+    @if (questionStats != null)
+    {
+        <h5>Statystyki odpowiedzi:</h5>
+        @foreach (var q in questionStats)
+        {
+            <div class="mb-2">
+                <strong>@q.QuestionText</strong>
+                <ul>
+                    @foreach (var a in q.Answers)
+                    {
+                        <li>
+                            @a.AnswerText: @a.SelectedPercent.ToString("F1")%
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    }
+
 </div>
 <div class="mb-3">
     <a asp-controller="Quizs" asp-action="Take" asp-route-id="@Model.Id" class="btn btn-success">Rozpocznij quiz</a>

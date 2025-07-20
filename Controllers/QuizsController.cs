@@ -104,10 +104,6 @@ namespace QuizzApp.Controllers
                 return NotFound();
             }
 
-            // Count how many people took the quiz
-            int attemptsCount = await _context.QuizAttempt.CountAsync(a => a.QuizId == id);
-            ViewData["AttemptsCount"] = attemptsCount;
-
             return View(quiz);
         }
 
@@ -252,5 +248,6 @@ namespace QuizzApp.Controllers
         {
             return _context.Quiz.Any(e => e.Id == id);
         }
+
     }
 }
