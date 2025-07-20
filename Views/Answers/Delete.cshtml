@@ -34,6 +34,7 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <button type="submit" class="btn btn-danger me-2">Usuń</button>
-        <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+        <a asp-action="Index" asp-route-questionId="@Model.QuestionId" class="btn btn-secondary">Powrót do listy</a>
+
     </form>
 </div>

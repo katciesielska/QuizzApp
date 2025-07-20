@@ -32,5 +32,6 @@
 </div>
 <div class="mt-3">
     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary me-2">Edytuj</a>
-    <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+    <a asp-action="Index" asp-route-questionId="@Model.QuestionId" class="btn btn-secondary">Powrót do listy</a>
+
 </div>
